@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Майнд-карта степеней родства</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState } = React;
+
+        const ChevronDown = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="6 9 12 15 18 9"></polyline></svg>;
+        const ChevronRight = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="9 18 15 12 9 6"></polyline></svg>;
+        const User = () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>;
+        const Users = () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>;
+
+        const FamilyMindMap = () => {
+            const [expanded, setExpanded] = useState({
+                direct: true,
+                lateral1: false,
+                lateral2: false,
+                lateral3: false,
+                lateral4: false,
+                lateral5: false
+            });
+
+            const toggle = (key) => {
+                setExpanded(prev => ({ ...prev, [key]: !prev[key] }));
+            };
+
+            const NodeButton = ({ id, label, children, color = "bg-blue-100", icon: Icon = User }) => (
+                <div className="ml-6 my-2">
+                    <button
+                        onClick={() => toggle(id)}
+                        className={`${color} hover:opacity-80 px-4 py-2 rounded-lg shadow-md flex items-center gap-2 transition-all`}
+                    >
+                        {children ? (expanded[id] ? <ChevronDown /> : <ChevronRight />) : null}
+                        <Icon />
+                        <span className="font-semibold">{label}</span>
+                    </button>
+                    {children && expanded[id] && <div className="ml-4 mt-2 border-l-2 border-gray-300 pl-2">{children}</div>}
+                </div>
+            );
+
+            const RelativeCard = ({ name, generation, path }) => (
+                <div className="bg-white border-2 border-gray-200 rounded-lg p-3 my-2 hover:shadow-lg transition-shadow">
+                    <div className="font-bold text-gray-800">{name}</div>
+                    <div className="text-sm text-gray-600 mt-1">Поколение: {generation}</div>
+                    <div className="text-xs text-gray-500 mt-1 font-mono">{path}</div>
+                </div>
+            );
+
+            return (
+                <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 p-8">
+                    <div className="max-w-6xl mx-auto">
+                        <h1 className="text-4xl font-bold text-gray-800 mb-2 text-center">Степени родства</h1>
+                        <p className="text-gray-600 mb-8 text-center">Интерактивная майнд-карта семейных связей</p>
+                        
+                        <div className="bg-white rounded-xl shadow-2xl p-6">
+                            <div className="flex justify-center mb-6">
+                                <div className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-8 py-4 rounded-full shadow-lg">
+                                    <div className="flex items-center gap-3">
+                                        <User />
+                                        <span className="text-2xl font-bold">Я</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <NodeButton id="direct" label="Прямая линия родства" color="bg-green-100" icon={Users}>
+                                <div className="grid gap-2">
+                                    <RelativeCard name="Отец / Мать" generation="старше на 1" path="Я → родитель" />
+                                    <RelativeCard name="Дед / Бабушка" generation="старше на 2" path="Я → родитель → их родители" />
+                                    <RelativeCard name="Прадед / Прабабушка" generation="старше на 3" path="Я → ... → прародители" />
+                                    <RelativeCard name="Прапрадед / Прапрабабушка" generation="старше на 4" path="Я → ... → 4 колено" />
+                                    <RelativeCard name="Предок 5-9 колена" generation="старше на 5-8" path="Я → ... → предки" />
+                                </div>
+                            </NodeButton>
+
+                            <NodeButton id="lateral1" label="Боковая линия: Уровень родителей" color="bg-yellow-100" icon={Users}>
+                                <div className="space-y-4">
+                                    <div>
+                                        <h4 className="font-bold text-gray-700 mb-2">Родные:</h4>
+                                        <RelativeCard name="Дядя / Тётя" generation="старше на 1" path="Я → родитель → их брат/сестра" />
+                                    </div>
+                                    <div>
+                                        <h4 className="font-bold text-gray-700 mb-2">Двоюродные:</h4>
+                                        <RelativeCard name="Двоюродный дядя / тётя" generation="старше на 1" path="Я → дед/бабушка → их брат/сестра → дети" />
+                                    </div>
+                                    <div>
+                                        <h4 className="font-bold text-gray-700 mb-2">Троюродные:</h4>
+                                        <RelativeCard name="Троюродный дядя / тётя" generation="старше на 1" path="Я → прадед → их брат/сестра → внуки" />
+                                    </div>
+                                </div>
+                            </NodeButton>
+
+                            <NodeButton id="lateral2" label="Кузены 1-го порядка (мои ровесники)" color="bg-orange-100" icon={Users}>
+                                <RelativeCard 
+                                    name="Двоюродный брат / сестра" 
+                                    generation="ровесник" 
+                                    path="Я → родитель → дядя/тётя → их дети (общий предок: дед/бабушка - 3 колено)" 
+                                />
+                            </NodeButton>
+
+                            <NodeButton id="lateral3" label="Кузены 2-го порядка (троюродные)" color="bg-pink-100" icon={Users}>
+                                <RelativeCard 
+                                    name="Троюродный брат / сестра" 
+                                    generation="ровесник" 
+                                    path="Я → двоюродный дядя/тётя → их дети (общий предок: прадед/прабабушка - 4 колено)" 
+                                />
+                            </NodeButton>
+
+                            <NodeButton id="lateral4" label="Кузены 3-го порядка (четвероюродные)" color="bg-indigo-100" icon={Users}>
+                                <RelativeCard 
+                                    name="Четвероюродный брат / сестра" 
+                                    generation="ровесник" 
+                                    path="Я → троюродный дядя/тётя → их дети (общий предок: прапрадед - 5 колено)" 
+                                />
+                            </NodeButton>
+
+                            <NodeButton id="lateral5" label="Дальние кузены (5-6 порядка)" color="bg-purple-100" icon={Users}>
+                                <div className="space-y-2">
+                                    <RelativeCard 
+                                        name="Пятиюродный брат / сестра" 
+                                        generation="ровесник" 
+                                        path="Общий предок в 6 колене" 
+                                    />
+                                    <RelativeCard 
+                                        name="Шестиюродный брат / сестра" 
+                                        generation="ровесник" 
+                                        path="Общий предок в 6 колене (другая ветвь)" 
+                                    />
+                                </div>
+                            </NodeButton>
+
+                            <div className="mt-6 p-4 bg-gray-50 rounded-lg">
+                                <h3 className="font-bold text-gray-800 mb-3">Уровень дедов и бабушек:</h3>
+                                <div className="grid gap-2">
+                                    <RelativeCard name="Двоюродный дед / бабушка" generation="старше на 2" path="Я → дед/бабушка → их брат/сестра" />
+                                    <RelativeCard name="Двоюродный прадед / прабабушка" generation="старше на 3" path="Я → прадед → их брат/сестра" />
+                                </div>
+                            </div>
+
+                            <div className="mt-8 p-4 bg-blue-50 rounded-lg">
+                                <h3 className="font-bold text-gray-800 mb-2">Легенда:</h3>
+                                <ul className="text-sm text-gray-700 space-y-1">
+                                    <li><strong>Колено</strong> — уровень общего предка</li>
+                                    <li><strong>1-е кузены</strong> — двоюродные братья/сёстры (общий предок: дед)</li>
+                                    <li><strong>2-е кузены</strong> — троюродные (общий предок: прадед)</li>
+                                    <li><strong>3-е кузены</strong> — четвероюродные (общий предок: прапрадед)</li>
+                                    <li><strong>4-е кузены</strong> — пятиюродные (общий предок: предок в 6 колене)</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        ReactDOM.render(<FamilyMindMap />, document.getElementById('root'));
+    </script>
+</body>
+</html>
