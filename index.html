@@ -30,8 +30,7 @@
                 lateral2: false,
                 lateral3: false,
                 lateral4: false,
-                lateral5: false,
-                lateral6: false
+                lateral5: false
             });
 
             const toggle = (key) => {
@@ -139,63 +138,6 @@
                                         generation="ровесник" 
                                         path="Общий предок в 7 колене" 
                                     />
-                                </div>
-                            </NodeButton>
-
-                            <NodeButton id="lateral6" label="Предки старших колен и их боковые ветви" color="bg-teal-100" icon={Users}>
-                                <div className="space-y-4">
-                                    <div>
-                                        <h4 className="font-bold text-gray-700 mb-2">Предок в 6 колене:</h4>
-                                        <RelativeCard 
-                                            name="Предок 6 колена" 
-                                            generation="старше на 5" 
-                                            path="Я → ... → 6-й уровень" 
-                                        />
-                                        <RelativeCard 
-                                            name="Двоюродный предок в 6 колене" 
-                                            generation="старше на 5" 
-                                            path="Я → предок 6 колена → его брат/сестра" 
-                                        />
-                                    </div>
-                                    <div>
-                                        <h4 className="font-bold text-gray-700 mb-2">Предок в 7 колене:</h4>
-                                        <RelativeCard 
-                                            name="Предок 7 колена" 
-                                            generation="старше на 6" 
-                                            path="Я → ... → 7-й уровень" 
-                                        />
-                                        <RelativeCard 
-                                            name="Двоюродный предок в 7 колене" 
-                                            generation="старше на 6" 
-                                            path="Я → предок 7 колена → его брат/сестра" 
-                                        />
-                                    </div>
-                                    <div>
-                                        <h4 className="font-bold text-gray-700 mb-2">Предок в 8 колене:</h4>
-                                        <RelativeCard 
-                                            name="Предок 8 колена" 
-                                            generation="старше на 7" 
-                                            path="Я → ... → 8-й уровень" 
-                                        />
-                                        <RelativeCard 
-                                            name="Двоюродный предок в 8 колене" 
-                                            generation="старше на 7" 
-                                            path="Я → предок 8 колена → его брат/сестра" 
-                                        />
-                                    </div>
-                                    <div>
-                                        <h4 className="font-bold text-gray-700 mb-2">Предок в 9 колене:</h4>
-                                        <RelativeCard 
-                                            name="Предок 9 колена" 
-                                            generation="старше на 8" 
-                                            path="Я → ... → 9-й уровень" 
-                                        />
-                                        <RelativeCard 
-                                            name="Двоюродный предок в 9 колене" 
-                                            generation="старше на 8" 
-                                            path="Я → предок 9 колена → его брат/сестра" 
-                                        />
-                                    </div>
                                 </div>
                             </NodeButton>
 
